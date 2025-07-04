@@ -1,0 +1,106 @@
+.header {
+  width: 100vw;
+  background: #7da6fa;
+  color: #fff;
+  font-size: 5vw;
+  text-align: center;
+  padding: 1.5rem 0 1rem 0;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin: 0 2vw 2vw 2vw;
+}
+.street-view {
+  flex: 1;
+  background: #fff;
+  padding: 1.5rem 1rem 2rem 1rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px #0001;
+  min-width: 350px;
+}
+.street-img {
+  width: 400px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 2px solid #ccc;
+}
+.upload-btn {
+  margin-bottom: 1rem;
+}
+.upload-btn label {
+  background: #7da6fa;
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.2s;
+}
+.upload-btn label:hover {
+  background: #5a8be3;
+}
+.central-lights {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: #e5e5e5;
+  border-radius: 10px;
+  padding: 2rem 2vw;
+  gap: 2vw;
+  min-width: 220px;
+}
+.traffic-light-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #bbb;
+  opacity: 0.4;
+  box-shadow: 0 2px 8px #0002;
+  transition: background 0.2s, opacity 0.2s;
+}
+.circle.red { background: #ff6b6b; }
+.circle.yellow { background: #fff475; }
+.circle.green { background: #4cff4c; }
+.circle.active {
+  opacity: 1;
+  box-shadow: 0 0 30px 5px #0003;
+}
+.info {
+  margin-top: 1.5rem;
+  font-size: 1.3rem;
+  color: #222;
+  text-align: left;
+}
+@media (max-width: 1100px) {
+  .dashboard-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .central-lights {
+    flex-direction: row;
+    margin: 2rem 0;
+  }
+  .street-img {
+    width: 90vw;
+    max-width: 400px;
+    height: 220px;
+  }
+}

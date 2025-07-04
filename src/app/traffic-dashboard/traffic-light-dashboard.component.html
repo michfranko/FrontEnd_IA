@@ -1,0 +1,43 @@
+<div class="header">
+  Traffic Light Viewer
+</div>
+<div class="dashboard-container">
+  <div class="street-view">
+    <img [src]="streetA.image || 'https://via.placeholder.com/400x300?text=Calle+A'" alt="Calle A" class="street-img" />
+    <div class="upload-btn">
+      <label>
+        <input type="file" (change)="onImageUpload($event, 'A')" hidden />
+        <span>Subir Imagen</span>
+      </label>
+    </div>
+    <div class="info">
+      <p>Predicción:</p>
+      <p>Cantidad Vehículos: {{streetA.vehicleCount}}</p>
+    </div>
+  </div>
+  <div class="central-lights">
+    <div class="traffic-light-col">
+      <div class="circle red" [ngClass]="{'active': streetA.light === 'red'}"></div>
+      <div class="circle yellow" [ngClass]="{'active': streetA.light === 'yellow'}"></div>
+      <div class="circle green" [ngClass]="{'active': streetA.light === 'green'}"></div>
+    </div>
+    <div class="traffic-light-col">
+      <div class="circle red" [ngClass]="{'active': streetB.light === 'red'}"></div>
+      <div class="circle yellow" [ngClass]="{'active': streetB.light === 'yellow'}"></div>
+      <div class="circle green" [ngClass]="{'active': streetB.light === 'green'}"></div>
+    </div>
+  </div>
+  <div class="street-view">
+    <img [src]="streetB.image || 'https://via.placeholder.com/400x300?text=Calle+B'" alt="Calle B" class="street-img" />
+    <div class="upload-btn">
+      <label>
+        <input type="file" (change)="onImageUpload($event, 'B')" hidden />
+        <span>Subir Imagen</span>
+      </label>
+    </div>
+    <div class="info">
+      <p>Predicción:</p>
+      <p>Cantidad Vehículos: {{streetB.vehicleCount}}</p>
+    </div>
+  </div>
+</div>

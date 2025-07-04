@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { TrafficLightDashboardComponent } from './traffic-dashboard/traffic-light-dashboard.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  standalone: true,
+  imports: [TrafficLightDashboardComponent],
+  template: `<app-traffic-light-dashboard></app-traffic-light-dashboard>`
 })
-export class App {
-  protected title = 'FrontEnd_IA';
-}
+export class App {}

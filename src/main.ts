@@ -1,6 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
 import { App } from './app/app';
 
-bootstrapApplication(App, appConfig)
+// Se eliminó la configuración base y la importación de appConfig
+bootstrapApplication(App)
   .catch((err) => console.error(err));

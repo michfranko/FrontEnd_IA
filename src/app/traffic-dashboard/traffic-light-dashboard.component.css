@@ -9,6 +9,9 @@
   font-weight: 400;
   letter-spacing: 2px;
   margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .dashboard-container {
   display: flex;
@@ -35,9 +38,6 @@
   margin-bottom: 1rem;
   border: 2px solid #ccc;
 }
-.upload-btn {
-  margin-bottom: 1rem;
-}
 .upload-btn label {
   background: #7da6fa;
   color: #fff;
@@ -46,10 +46,14 @@
   cursor: pointer;
   font-size: 1.1rem;
   transition: background 0.2s;
+  display: flex;
+  outline: 1px solid #fff;
+  margin-left: 20px;
 }
 .upload-btn label:hover {
-  background: #5a8be3;
+  background: #6a8cd9;
 }
+
 .central-lights {
   display: flex;
   flex-direction: row;
@@ -89,7 +93,53 @@
   color: #222;
   text-align: left;
 }
+.footer{
+  color:#fff;
+  font-size: 30px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  height: 200px;
+  background: #7da6fa;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+}
+.footer div{
+  display: flex;
+  text-align: center;
+  width: 20%;
+}
+.footer div div{
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+
+}
+.footer .integrantes{
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.integrantes-con{
+  display: flex;
+  flex-direction: row;
+}
+.last{
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 1100px) {
+  body{
+    overflow: auto;
+  }
   .dashboard-container {
     flex-direction: column;
     align-items: center;

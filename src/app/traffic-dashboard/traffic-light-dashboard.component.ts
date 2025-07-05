@@ -10,23 +10,25 @@ import { NgClass } from '@angular/common';
 })
 export class TrafficLightDashboardComponent implements OnInit {
   ngOnInit(): void {
-      this.changeSignal("23")
-      setTimeout(() => {
-        this.changeSignal("22")
-      }, 500);
+
+    this.encenderLux(1000, 1);
+    setTimeout(() => {
+      this.encenderLux(1000, 2);
+    }, 4000);
+      
   }
   // Estados simulados
   streetA = {
     light: 'yellow',
     prediction: 'Alto',
     vehicleCount: 3,
-    image: '',
+    image: 'foto1.jpg',
   };
   streetB = {
     light: 'green',
     prediction: 'Avance',
     vehicleCount: 1,
-    image: '',
+    image: 'foto2.jpg',
   };
 
   // Para cargar imágenes
@@ -49,27 +51,47 @@ export class TrafficLightDashboardComponent implements OnInit {
 
   signal = 12
 
+  encenderLux(time:number, street:number) {
+    if(street == 1){
+      this.changeSignal("13")
+    setTimeout(() => {
+        this.changeSignal("12")
+      setTimeout(() => {
+        this.changeSignal("11")
+      }, 2000);
+    }, time);
+    } else if (street == 2){
+      this.changeSignal("23")
+    setTimeout(() => {
+        this.changeSignal("22")
+      setTimeout(() => {
+        this.changeSignal("21")
+      }, 2000);
+    }, time);
+    }
+  }
+
   changeSignal(signal:string) {
     let light = {
     light: 'yellow',
-    prediction: 'Alto',
-    vehicleCount: 3,
-    image: '',
-  };;
+  };
+  
     if(signal[0]=="1"){
-        this.streetA.light = 'red';
-        light = this.streetA
-    } else if(signal[0]=="2"){
         this.streetB.light = 'red';
+        light = this.streetA
+        console.log("primera luz roja")
+    } else if(signal[0]=="2"){
+        this.streetA.light = 'red';
         light = this.streetB
+        console.log("segunda luz roja")
     }
     
     if(signal[1]=="1"){
-        light.light = 'green';
+        light.light = 'red';
     } else if(signal[1]=="2"){
-        light.light = 'green';
-    } else if(signal[1]=="3"){
         light.light = 'yellow';
+    } else if(signal[1]=="3"){
+        light.light = 'green';
     }
   }
 

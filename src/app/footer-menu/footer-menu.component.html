@@ -1,0 +1,33 @@
+<footer class="footer-menu">
+  <button (click)="openGithub()">
+    <span class="icon">🐙</span>
+    Github
+  </button>
+  <button (click)="toggleIntegrantes()">
+    <span class="icon">👥</span>
+    Integrantes
+  </button>
+  <button (click)="toggleAbout()">
+    <span class="icon">ℹ️</span>
+    Sobre el proyecto
+  </button>
+  <div class="modal" *ngIf="showIntegrantes" (click)="toggleIntegrantes()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Integrantes</h3>
+      <ul>
+        <li>Jorge Cueva</li>
+        <li>Michael Franco</li>
+        <li>Michael Lata</li>
+        <li>Bryam Mejía</li>
+      </ul>
+    </div>
+  </div>
+  <div class="modal" *ngIf="showAbout" (click)="toggleAbout()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Sobre el proyecto</h3>
+      <p>
+        Sistema de visualización y control de semáforos basado en análisis de imágenes y predicción de tráfico vehicular.
+      </p>
+    </div>
+  </div>
+</footer>

@@ -11,6 +11,12 @@ import { Requests } from '../service/requests';
   styleUrls: ['./traffic-light-dashboard.component.css']
 })
 export class TrafficLightDashboardComponent implements OnInit {
+
+  imagenBaseUrl1 = 'http://127.0.0.1:5000/im1';
+  imagenBaseUrl2 = 'http://127.0.0.1:5000/im2';
+
+  imagenUrl1 = ''
+  imagenUrl2 = ''
   // Estados simulados
   streetA = {
     light: 'yellow',
@@ -35,6 +41,7 @@ export class TrafficLightDashboardComponent implements OnInit {
 
     setInterval(() => {
       this.datos = this.sol.solicitarDatos().subscribe((data) => {
+        this.actualizarImagen();
         this.changeSignal(data[0]+"");
         this.streetA.prediction = data[1]+"";
         this.streetB.prediction = data[2]+"";
@@ -44,7 +51,11 @@ export class TrafficLightDashboardComponent implements OnInit {
     }, 3000);
   }
   constructor(private sol:Requests) {}
-  
+  actualizarImagen(): void {
+    const timestamp = new Date().getTime();
+    this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${timestamp}`;
+    this.imagenUrl2 = `${this.imagenBaseUrl2}?t=${timestamp}`;
+  }
   // Para cargar imágenes
   onImageUpload(event: any, street: 'A' | 'B') {
     const file = event.target.files[0];

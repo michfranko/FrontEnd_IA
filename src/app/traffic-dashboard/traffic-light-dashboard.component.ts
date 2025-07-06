@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { FooterMenuComponent } from '../footer-menu/footer-menu.component';
+import { Requests } from '../service/requests';
 
 @Component({
   selector: 'app-traffic-light-dashboard',
@@ -10,12 +11,6 @@ import { FooterMenuComponent } from '../footer-menu/footer-menu.component';
   styleUrls: ['./traffic-light-dashboard.component.css']
 })
 export class TrafficLightDashboardComponent implements OnInit {
-  ngOnInit(): void {
-    this.encenderLux(1000, 1);
-    setTimeout(() => {
-      this.encenderLux(1000, 2);
-    }, 4000);
-  }
   // Estados simulados
   streetA = {
     light: 'yellow',
@@ -30,6 +25,21 @@ export class TrafficLightDashboardComponent implements OnInit {
     image: 'foto2.jpg',
   };
 
+  datos: any;
+  ngOnInit(): void {
+    setInterval(() => {
+      this.datos = this.sol.solicitarDatos().subscribe((data) => {
+        console.log(data);
+        this.changeSignal(data[0]+"");
+        this.streetA.prediction = data[1]+"";
+        this.streetB.prediction = data[2]+"";
+        this.streetA.vehicleCount = data[3];
+        this.streetB.vehicleCount = data[4];
+      })
+    }, 3000);
+  }
+  constructor(private sol:Requests) {}
+  
   // Para cargar imágenes
   onImageUpload(event: any, street: 'A' | 'B') {
     const file = event.target.files[0];

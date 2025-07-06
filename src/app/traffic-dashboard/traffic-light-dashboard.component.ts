@@ -16,20 +16,25 @@ export class TrafficLightDashboardComponent implements OnInit {
     light: 'yellow',
     prediction: 'Alto',
     vehicleCount: 3,
-    image: 'foto1.jpg',
   };
   streetB = {
     light: 'green',
     prediction: 'Avance',
-    vehicleCount: 1,
-    image: 'foto2.jpg',
+    vehicleCount: 1
   };
 
   datos: any;
   ngOnInit(): void {
+    this.datos = this.sol.solicitarDatos().subscribe((data) => {
+        this.changeSignal(data[0]+"");
+        this.streetA.prediction = data[1]+"";
+        this.streetB.prediction = data[2]+"";
+        this.streetA.vehicleCount = data[3];
+        this.streetB.vehicleCount = data[4];
+      })
+
     setInterval(() => {
       this.datos = this.sol.solicitarDatos().subscribe((data) => {
-        console.log(data);
         this.changeSignal(data[0]+"");
         this.streetA.prediction = data[1]+"";
         this.streetB.prediction = data[2]+"";
@@ -46,16 +51,10 @@ export class TrafficLightDashboardComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        if (street === 'A') this.streetA.image = e.target.result;
-        else this.streetB.image = e.target.result;
+      // Asignar la imagen cargada para pruebas
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  // Simulación de actualización periódica
-  updateImages() {
-    // Aquí iría la lógica para actualizar imágenes desde una API
   }
 
   signal = 12;

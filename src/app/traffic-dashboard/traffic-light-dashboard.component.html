@@ -16,7 +16,7 @@
         <div class="light green" [ngClass]="{'on': streetA.light === 'green'}"></div>
       </div>
       <div class="card-content">
-        <img [src]="streetA.image" alt="Calle A" class="street-image" />
+        <img src="http://127.0.0.1:5000/im1" alt="Calle A" class="street-image" />
         <div class="info">
           <div>Predicción: {{streetA.prediction}}</div>
           <div>Cantidad Vehículos: {{streetA.vehicleCount}}</div>
@@ -25,7 +25,7 @@
     </div>
     <div class="street-card">
       <div class="card-content">
-        <img [src]="streetB.image" alt="Calle B" class="street-image" />
+        <img src="http://127.0.0.1:5000/im2" alt="Calle B" class="street-image" />
         <div class="info">
           <div>Predicción: {{streetB.prediction}}</div>
           <div>Cantidad Vehículos: {{streetB.vehicleCount}}</div>

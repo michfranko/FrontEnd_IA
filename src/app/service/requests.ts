@@ -6,6 +6,11 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class Requests {
+  sendImg(img:File) {
+    const formData = new FormData();
+    formData.append('image', img); 
+    return this.http.post<any>('http://localhost:5000/send', formData);
+  }
 
   constructor( private http: HttpClient ) {}
 

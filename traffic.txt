@@ -1,5 +1,5 @@
-23
+13
 prediccion1
 prediccion2
-conteo 1
-conteo 2
+19
+20

@@ -56,17 +56,20 @@ export class TrafficLightDashboardComponent implements OnInit {
     this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${timestamp}`;
     this.imagenUrl2 = `${this.imagenBaseUrl2}?t=${timestamp}`;
   }
-  // Para cargar imágenes
   onImageUpload(event: any, street: 'A' | 'B') {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-      // Asignar la imagen cargada para pruebas
-      };
-      reader.readAsDataURL(file);
-    }
+  const file = event.target.files[0];
+  if (file) {
+    this.sol.sendImg(file).subscribe({
+      next: (response) => {
+        console.log('Respuesta del backend:', response);
+        // Aquí podrías guardar los resultados o mostrarlos en pantalla
+      },
+      error: (err) => {
+        console.error('Error al enviar la imagen:', err);
+      }
+    });
   }
+}
 
   signal = 12;
 

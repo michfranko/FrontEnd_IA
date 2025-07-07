@@ -171,6 +171,68 @@ input[type="file"] {
   flex-direction: column;
 }
 
+.prediction-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 2000;
+}
+.prediction-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px #0003;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  z-index: 2100;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.prediction-modal h2 {
+  margin-bottom: 1.2rem;
+  color: #3a4a6b;
+  font-size: 1.5rem;
+}
+.modal-image {
+  width: 260px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px #0001;
+}
+.modal-info {
+  font-size: 1.2rem;
+  color: #222;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.modal-count {
+  display: block;
+  font-size: 2.2rem;
+  color: #2b8a3e;
+  margin-top: 0.5rem;
+}
+.close-btn {
+  background: #7da6fa;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.close-btn:hover {
+  background: #5a8be3;
+}
+
 @media (max-width: 1100px) {
   body{
     overflow: auto;

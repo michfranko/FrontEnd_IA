@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class Requests {
   sendImg(img:File) {
+    console.log('Enviando imagen al servidor:', img);
     const formData = new FormData();
     formData.append('image', img); 
     return this.http.post<any>('http://localhost:5000/send', formData);

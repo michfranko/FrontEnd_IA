@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { FooterMenuComponent } from '../footer-menu/footer-menu.component';
 import { Requests } from '../service/requests';
 
 @Component({
   selector: 'app-traffic-light-dashboard',
   standalone: true,
-  imports: [NgClass, FooterMenuComponent],
+  imports: [NgClass, NgIf, FooterMenuComponent],
   templateUrl: './traffic-light-dashboard.component.html',
   styleUrls: ['./traffic-light-dashboard.component.css']
 })
@@ -56,13 +56,24 @@ export class TrafficLightDashboardComponent implements OnInit {
     this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${timestamp}`;
     this.imagenUrl2 = `${this.imagenBaseUrl2}?t=${timestamp}`;
   }
-  onImageUpload(event: any, street: 'A' | 'B') {
+  showPredictionModal = false;
+  predictionImage: string | null = null;
+  predictionVehicleCount: number | null = null;
+
+ 
+ onImageUpload(event: any) {
   const file = event.target.files[0];
   if (file) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.predictionImage = e.target.result; // Guarda la imagen subida como base64
+    };
+    reader.readAsDataURL(file);
     this.sol.sendImg(file).subscribe({
       next: (response) => {
         console.log('Respuesta del backend:', response);
-        // Aquí podrías guardar los resultados o mostrarlos en pantalla
+        this.predictionVehicleCount = response.results?.length ?? 0; // Guarda el conteo real
+        this.showPredictionModal = true; // Muestra el modal flotante
       },
       error: (err) => {
         console.error('Error al enviar la imagen:', err);
@@ -70,6 +81,14 @@ export class TrafficLightDashboardComponent implements OnInit {
     });
   }
 }
+    
+  
+
+  closePredictionModal() {
+    this.showPredictionModal = false;
+    this.predictionImage = null;
+    this.predictionVehicleCount = null;
+  }
 
   signal = 12;
 

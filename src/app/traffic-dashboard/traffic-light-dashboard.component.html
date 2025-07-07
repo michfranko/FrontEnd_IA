@@ -2,7 +2,7 @@
   Traffic Light Viewer
   <div class="upload-btn">
     <label>
-      <input type="file" (change)="onImageUpload($event, 'A')" hidden />
+      <input type="file" (change)="onImageUpload($event)" hidden />
       <span>Prueba nuestro modelo</span>
     </label>
   </div>
@@ -42,3 +42,15 @@
   </div>
 </div>
 <app-footer-menu></app-footer-menu>
+<ng-container *ngIf="showPredictionModal">
+  <div class="prediction-modal-backdrop" (click)="closePredictionModal()"></div>
+  <div class="prediction-modal">
+    <h2>Análisis de Imagen</h2>
+    <img [src]="predictionImage" alt="Imagen subida" class="modal-image" />
+    <div class="modal-info">
+      <strong>Cantidad de vehículos contados:</strong>
+      <span class="modal-count">{{ predictionVehicleCount }}</span>
+    </div>
+    <button class="close-btn" (click)="closePredictionModal()">Cerrar</button>
+  </div>
+</ng-container>

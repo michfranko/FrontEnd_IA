@@ -49,6 +49,8 @@ export class TrafficLightDashboardComponent implements OnInit {
         this.streetB.vehicleCount = data[4];
       })
     }, 3000);
+
+    this.mostrarMensajeInicial();
   }
   constructor(private sol:Requests) {}
   actualizarImagen(): void {
@@ -137,4 +139,19 @@ export class TrafficLightDashboardComponent implements OnInit {
       light.light = 'green';
     }
   }
+
+
+
+mensajeVisible = false;
+mensajeTexto = '';
+
+
+mostrarMensajeInicial() {
+  this.mensajeTexto = 'Bienvenido. El sistema está listo para analizar imágenes.';
+  this.mensajeVisible = true;
+
+  
+}
+
+
 }

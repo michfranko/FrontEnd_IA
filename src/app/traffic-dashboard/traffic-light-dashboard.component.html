@@ -1,12 +1,19 @@
 <div class="header">
+  <div class="left-action">
+    <button class="analysis-btn">Análisis de Imágenes</button>
+  </div>
+
   Traffic Light Viewer
-  <div class="upload-btn">
+
+  <div class="upload-btn" style="display: none;">
     <label>
       <input type="file" (change)="onImageUpload($event)" hidden />
       <span>Prueba nuestro modelo</span>
     </label>
   </div>
 </div>
+
+
 <div class="dashboard-container">
   <div class="dashboard-content">
     <div class="street-card">
@@ -17,17 +24,18 @@
       </div>
       <div class="card-content">
         <img [src]="imagenUrl1" alt="Calle A" class="street-image" />
-
+        <button class="image-action-btn">Acción Imagen A</button>
         <div class="info">
           <div>Predicción: {{streetA.prediction}}</div>
           <div>Cantidad Vehículos: {{streetA.vehicleCount}}</div>
         </div>
       </div>
     </div>
+
     <div class="street-card">
       <div class="card-content">
         <img [src]="imagenUrl2" alt="Calle B" class="street-image" />
-
+        <button class="image-action-btn">Acción Imagen B</button>
         <div class="info">
           <div>Predicción: {{streetB.prediction}}</div>
           <div>Cantidad Vehículos: {{streetB.vehicleCount}}</div>
@@ -40,8 +48,17 @@
       </div>
     </div>
   </div>
+
+  <!-- Mensaje debajo de los street-card -->
+  <div class="message-box" *ngIf="mensajeVisible">
+    {{ mensajeTexto }}
+  </div>
 </div>
+
+
+
 <app-footer-menu></app-footer-menu>
+
 <ng-container *ngIf="showPredictionModal">
   <div class="prediction-modal-backdrop" (click)="closePredictionModal()"></div>
   <div class="prediction-modal">

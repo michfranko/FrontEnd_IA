@@ -1,5 +1,5 @@
 13
-prediccion1
-prediccion2
-19
-20
+prediccion dada con la imgen
+prediccion 2 dada con la imagen
+4
+10

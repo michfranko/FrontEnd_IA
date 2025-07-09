@@ -41,7 +41,7 @@ export class TrafficLightDashboardComponent implements OnInit {
 
     setInterval(() => {
       this.datos = this.sol.solicitarDatos().subscribe((data) => {
-        this.actualizarImagen();
+        this.actualizarImagen();1
         this.changeSignal(data[0]+"");
         this.streetA.prediction = data[1]+"";
         this.streetB.prediction = data[2]+"";
@@ -74,12 +74,20 @@ export class TrafficLightDashboardComponent implements OnInit {
         console.log('Respuesta del backend:', response);
         this.predictionVehicleCount = response.results?.length ?? 0; // Guarda el conteo real
         this.showPredictionModal = true; // Muestra el modal flotante
+
+        setTimeout(() => {
+          this.predictionImage = null; 
+          const timestamp = new Date().getTime();
+          let imgUrlTest = "http://127.0.0.1:5000/imTest"
+          this.predictionImage = `${imgUrlTest}?t=${timestamp}`;
+        }, 500); 
       },
       error: (err) => {
         console.error('Error al enviar la imagen:', err);
       }
     });
   }
+  
 }
     
   

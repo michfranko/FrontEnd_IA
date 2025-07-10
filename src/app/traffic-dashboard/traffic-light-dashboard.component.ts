@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { FooterMenuComponent } from '../footer-menu/footer-menu.component';
 import { Requests } from '../service/requests';
+import { GeminiAPI } from '../service/gemini-api';
+import { forkJoin } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-traffic-light-dashboard',
@@ -11,6 +14,76 @@ import { Requests } from '../service/requests';
   styleUrls: ['./traffic-light-dashboard.component.css']
 })
 export class TrafficLightDashboardComponent implements OnInit {
+  imagen1:File | null = null;
+  imagen2:File | null = null;
+
+CargarImagen(event: Event, street: 'A' | 'B') {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    if (street === 'A') {
+      this.imagen1 = file;
+      this.imagenUrl1 = e.target.result;  // Mostrar en el HTML temporalmente
+    } else {
+      this.imagen2 = file;
+      this.imagenUrl2 = e.target.result;  // Mostrar en el HTML temporalmente
+    }
+  };
+  reader.readAsDataURL(file);
+}
+AnalizarImagenes() {
+  if (!this.imagen1 || !this.imagen2) {
+    this.mensajeTexto = "Debe subir las dos imagenes para realizar la comparacion.";
+    this.mensajeVisible = true;
+    return;
+  }
+
+  if (this.imagen1) {
+    this.sol.sendImg1(this.imagen1).subscribe({
+      next: (response) => {
+        this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${new Date().getTime()}`;
+        if (this.imagen2) {
+          this.sol.sendImg2(this.imagen2).subscribe({
+            next: (response) => {
+              this.imagenUrl2 = `${this.imagenBaseUrl2}?t=${new Date().getTime()}`;
+
+
+              this.datos = this.sol.solicitarDatos().subscribe((data) => {
+                this.actualizarImagen();1
+                this.changeSignal(data[0]+"");
+                this.streetA.prediction = data[1]+"";
+                this.streetB.prediction = data[2]+"";
+                this.streetA.vehicleCount = data[3];
+                this.streetB.vehicleCount = data[4];
+
+
+                this.gem.generarContenido( 'Genera un texto corto muy consiso hazlo sin dudas o preguntas en donde expliques, cual es la calle que debe tener preferencia y el tiempo aproximado que debería estar activa esa preferencia si, estamos en una intersección con semaforo, la primera calle tiene '+this.streetA.vehicleCount +" vehiculos, y la segunda calle tiene "+this.streetB.vehicleCount+" vehiculos").subscribe({
+                  next: (response:any) => {
+                    this.mensajeTexto = response.candidates[0]?.content?.parts[0]?.text || 'No se pudo generar texto';
+
+                  },
+                  error: (err) => console.error('Error al generar contenido:', err)
+                });
+              })
+                    },
+                error: (err) => console.error('Error al analizar imagen B:', err)
+              });
+            }
+      },
+      error: (err) => console.error('Error al analizar imagen A:', err)
+    });
+  }
+
+  
+
+  this.showPredictionModal = true;
+}
+
+
 
   imagenBaseUrl1 = 'http://127.0.0.1:5000/im1';
   imagenBaseUrl2 = 'http://127.0.0.1:5000/im2';
@@ -31,28 +104,28 @@ export class TrafficLightDashboardComponent implements OnInit {
 
   datos: any;
   ngOnInit(): void {
-    this.datos = this.sol.solicitarDatos().subscribe((data) => {
-        this.changeSignal(data[0]+"");
-        this.streetA.prediction = data[1]+"";
-        this.streetB.prediction = data[2]+"";
-        this.streetA.vehicleCount = data[3];
-        this.streetB.vehicleCount = data[4];
-      })
+    // this.datos = this.sol.solicitarDatos().subscribe((data) => {
+    //     this.changeSignal(data[0]+"");
+    //     this.streetA.prediction = data[1]+"";
+    //     this.streetB.prediction = data[2]+"";
+    //     this.streetA.vehicleCount = data[3];
+    //     this.streetB.vehicleCount = data[4];
+    //   })
 
-    setInterval(() => {
-      this.datos = this.sol.solicitarDatos().subscribe((data) => {
-        this.actualizarImagen();1
-        this.changeSignal(data[0]+"");
-        this.streetA.prediction = data[1]+"";
-        this.streetB.prediction = data[2]+"";
-        this.streetA.vehicleCount = data[3];
-        this.streetB.vehicleCount = data[4];
-      })
-    }, 3000);
+    // setInterval(() => {
+    //   this.datos = this.sol.solicitarDatos().subscribe((data) => {
+    //     this.actualizarImagen();1
+    //     this.changeSignal(data[0]+"");
+    //     this.streetA.prediction = data[1]+"";
+    //     this.streetB.prediction = data[2]+"";
+    //     this.streetA.vehicleCount = data[3];
+    //     this.streetB.vehicleCount = data[4];
+    //   })
+    // }, 6000);
 
     this.mostrarMensajeInicial();
   }
-  constructor(private sol:Requests) {}
+  constructor(private sol:Requests ,private gem:GeminiAPI) {}
   actualizarImagen(): void {
     const timestamp = new Date().getTime();
     this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${timestamp}`;
@@ -91,6 +164,11 @@ export class TrafficLightDashboardComponent implements OnInit {
   }
   
 }
+
+ PredecirConjunto(event: any) {
+  
+}
+    
     
   
 
@@ -147,7 +225,7 @@ mensajeTexto = '';
 
 
 mostrarMensajeInicial() {
-  this.mensajeTexto = 'Bienvenido. El sistema está listo para analizar imágenes.';
+  this.mensajeTexto = 'El sistema está listo para analizar imágenes.';
   this.mensajeVisible = true;
 
   

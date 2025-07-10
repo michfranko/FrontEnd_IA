@@ -332,6 +332,18 @@ input[type="file"] {
   background: #5a8be3;
 }
 
+  .message-box {
+  color: #0c4a6e;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-family: 'Inter', Arial, sans-serif;
+  box-shadow: 0 2px 8px #0001;
+  text-align: center;
+  width: 600px;
+}
+
 /* --- RESPONSIVE --- */
 
 @media (max-width: 1100px) {

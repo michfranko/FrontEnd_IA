@@ -1,5 +1,5 @@
-13
-prediccion dada con la imgen
-prediccion 2 dada con la imagen
-4
-10
+23
+{0: 'car'}
+{0: 'car'}
+27
+30

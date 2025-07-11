@@ -13,12 +13,20 @@ export class FooterMenuComponent {
   showAbout = false;
 
   openGithub() {
-    window.open('https://github.com/tu-repo', '_blank');
+    window.open('https://github.com/SirYorch/Smart-Traffic-Light', '_blank');
   }
   toggleIntegrantes() {
     this.showIntegrantes = !this.showIntegrantes;
+    if(this.showAbout && this.showIntegrantes) {
+      this.showAbout = false; // Hide About section when Integrantes is toggled
+    }
   }
   toggleAbout() {
     this.showAbout = !this.showAbout;
+    console.log('About section toggled:', this.showAbout);
+    console.log('Integrantes section visibility:', this.showIntegrantes);
+    if(this.showAbout && this.showIntegrantes) {
+      this.showIntegrantes = false; // Hide Integrantes section when About is toggled
+    }
   }
 }

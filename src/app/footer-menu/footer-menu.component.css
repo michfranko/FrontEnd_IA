@@ -35,3 +35,18 @@
 .icon {
   font-size: 1.2rem; /* Más pequeño */
 }
+.modal{
+  background-color: white;
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  padding: 50px;
+  top: -600%;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

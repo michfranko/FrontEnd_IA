@@ -104,6 +104,8 @@ AnalizarImagenes() {
 
   datos: any;
   ngOnInit(): void {
+    this.imagen1 = null;
+    this.imagen2 = null;
     // this.datos = this.sol.solicitarDatos().subscribe((data) => {
     //     this.changeSignal(data[0]+"");
     //     this.streetA.prediction = data[1]+"";
@@ -111,7 +113,19 @@ AnalizarImagenes() {
     //     this.streetA.vehicleCount = data[3];
     //     this.streetB.vehicleCount = data[4];
     //   })
-
+    // Cargar imágenes por defecto desde la carpeta public como File
+    fetch('foto1.jpg')
+      .then(res => res.blob())
+      .then(blob => {
+      this.imagen1 = new File([blob], 'foto1.jpg', { type: blob.type });
+      this.imagenUrl1 = 'foto1.jpg';
+      });
+    fetch('foto2.jpg')
+      .then(res => res.blob())
+      .then(blob => {
+      this.imagen2 = new File([blob], 'foto2.jpg', { type: blob.type });
+      this.imagenUrl2 = 'foto2.jpg';
+      });
     // setInterval(() => {
     //   this.datos = this.sol.solicitarDatos().subscribe((data) => {
     //     this.actualizarImagen();1

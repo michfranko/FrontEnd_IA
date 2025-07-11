@@ -12,7 +12,7 @@ model = YOLO('best.pt')
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/")
+@app.route("/api/")
 def hello_world():
     try:
         with open("traffic.txt", "r") as file:
@@ -25,7 +25,7 @@ def hello_world():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/im2')
+@app.route('/api/im2')
 def get_image2():
     img_path = os.path.join("static", "output2.png")
     try:
@@ -34,7 +34,7 @@ def get_image2():
         return jsonify({"error": "Image not found"}), 404
 
 
-@app.route('/im1')
+@app.route('/api/im1')
 def get_image1():
     img_path = os.path.join("static", "output1.png")
     try:
@@ -43,7 +43,7 @@ def get_image1():
         return jsonify({"error": "Image not found"}), 404
 
 
-@app.route("/send", methods=['POST'])
+@app.route("/api/send", methods=['POST'])
 def process_img():
     try:
         if 'image' not in request.files:
@@ -90,7 +90,7 @@ def process_img():
 
 import json  # para convertir objetos a texto plano
 
-@app.route("/send1", methods=['POST'])
+@app.route("/api/send1", methods=['POST'])
 def process_img1():
     try:
         if 'image' not in request.files:
@@ -146,7 +146,7 @@ def process_img1():
 
 
 
-@app.route("/send2", methods=['POST'])
+@app.route("/api/send2", methods=['POST'])
 def process_img2():
     try:
         if 'image' not in request.files:
@@ -219,7 +219,7 @@ def process_img2():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/imTest')
+@app.route('/api/imTest')
 def get_processed_image():
     img_path = os.path.join("static", "output.png")
     try:

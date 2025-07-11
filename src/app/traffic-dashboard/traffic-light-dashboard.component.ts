@@ -85,8 +85,8 @@ AnalizarImagenes() {
 
 
 
-  imagenBaseUrl1 = 'http://127.0.0.1:5000/im1';
-  imagenBaseUrl2 = 'http://127.0.0.1:5000/im2';
+  imagenBaseUrl1 = '/api/im1';
+  imagenBaseUrl2 = '/api/im2';
 
   imagenUrl1 = ''
   imagenUrl2 = ''
@@ -153,7 +153,7 @@ AnalizarImagenes() {
         setTimeout(() => {
           this.predictionImage = null; 
           const timestamp = new Date().getTime();
-          let imgUrlTest = "http://127.0.0.1:5000/imTest"
+          let imgUrlTest = "/imTest"
           this.predictionImage = `${imgUrlTest}?t=${timestamp}`;
         }, 500); 
       },

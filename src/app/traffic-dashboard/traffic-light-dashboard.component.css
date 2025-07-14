@@ -1,12 +1,12 @@
 /* --- ESTILOS GENERALES --- */
 
 .header {
-  width: 100vw;
+  width: 100%;
   background: #7da6fa;
   color: #fff;
-  font-size: 3.5vw; /* Reducido de 5vw */
+  font-size: 2rem;
   text-align: center;
-  padding: 1rem 0; /* Reducido de 1.5rem 0 1rem 0 */
+  padding: 1rem 0;
   font-family: 'Inter', Arial, sans-serif;
   font-weight: 400;
   letter-spacing: 1.5px;
@@ -84,24 +84,28 @@
 
 .dashboard-content {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 3rem;
+  gap: 2rem;
+  padding: 1rem;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .street-card {
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 4px 16px #0001;
-  padding: 1.5rem 2rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-width: 500px;
-  max-width: 600px;
+  width: 100%;
+  max-width: 550px;
   position: relative;
-  margin: 1.5rem 0;
+  margin: 1rem;
 }
 
 
@@ -113,8 +117,10 @@
 }
 
 .street-image {
-  width: 340px;
-  height: 220px;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 1.2rem;
@@ -346,30 +352,50 @@ input[type="file"] {
 
 /* --- RESPONSIVE --- */
 
-@media (max-width: 1100px) {
-  body {
-    overflow: auto;
+@media (max-width: 1200px) {
+  .dashboard-content {
+    gap: 1.5rem;
+    padding: 1rem;
   }
+  .street-card {
+    max-width: 48%;
+  }
+}
 
+@media (max-width: 992px) {
   .dashboard-content {
     flex-direction: column;
     align-items: center;
   }
-
   .street-card {
-    min-width: 90vw;
-    max-width: 600px;
-    flex-direction: column;
-    align-items: center;
+    max-width: 80%;
+    flex-direction: row;
   }
+}
 
+@media (max-width: 768px) {
+  .header {
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+  .analysis-btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+  }
+  .street-card {
+    max-width: 90%;
+    flex-direction: column;
+  }
   .side-traffic-light, .side-traffic-light.right {
     flex-direction: row;
     margin: 1rem 0;
-    gap: 1.2rem;
-    padding: 0.8rem 1.2rem;
+    gap: 1rem;
+    padding: 0.6rem 1rem;
   }
-
+  .light {
+    width: 40px;
+    height: 40px;
+  }
   .info {
     margin-left: 0;
     margin-top: 1rem;
@@ -377,43 +403,32 @@ input[type="file"] {
   }
 }
 
-@media (max-width: 900px) {
-  .street-card {
-    min-width: 90vw;
-    max-width: 400px;
+@media (max-width: 576px) {
+  .header {
+    font-size: 1.2rem;
   }
-
-   .street-image {
-    width: 90vw;
-    max-width: 320px;
-    height: 180px;
-  }
-
-  .test-model-btn {
+  .left-action {
     position: static;
     transform: none;
-    margin-top: 1rem;
-    display: block;
+    margin-bottom: 0.5rem;
   }
-
+  .street-card {
+    max-width: 95%;
+    padding: 1rem;
+  }
+  .street-image {
+    max-width: 100%;
+  }
+  .light {
+    width: 35px;
+    height: 35px;
+  }
   .message-box {
-  background-color: #e0f2fe;
-  color: #0c4a6e;
-  border: 1px solid #90cdf4;
-  border-radius: 10px;
-  padding: 1rem 1.5rem;
-  margin-top: 1rem;
-  font-size: 1rem;
-  font-family: 'Inter', Arial, sans-serif;
-  box-shadow: 0 2px 8px #0001;
-  text-align: center;
-  max-width: 600px;
-  width: 100%;
-}
-
-
-
-
-
-
+    width: 90%;
+    padding: 0.8rem 1rem;
+  }
+  .prediction-modal {
+    width: 90%;
+    padding: 1.5rem;
+  }
 }

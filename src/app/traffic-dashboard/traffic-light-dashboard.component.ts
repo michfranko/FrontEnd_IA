@@ -5,6 +5,7 @@ import { Requests } from '../service/requests';
 import { GeminiAPI } from '../service/gemini-api';
 import { forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { HistoryService } from '../service/history.service';
 
 @Component({
   selector: 'app-traffic-light-dashboard',
@@ -42,43 +43,47 @@ AnalizarImagenes() {
     return;
   }
 
+  const originalImageUrl1 = this.imagenUrl1;
+  const originalImageUrl2 = this.imagenUrl2;
+
   if (this.imagen1) {
     this.sol.sendImg1(this.imagen1).subscribe({
       next: (response) => {
-        this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${new Date().getTime()}`;
         if (this.imagen2) {
           this.sol.sendImg2(this.imagen2).subscribe({
             next: (response) => {
-              this.imagenUrl2 = `${this.imagenBaseUrl2}?t=${new Date().getTime()}`;
-
-
               this.datos = this.sol.solicitarDatos().subscribe((data) => {
-                this.actualizarImagen();1
-                this.changeSignal(data[0]+"");
-                this.streetA.prediction = data[1]+"";
-                this.streetB.prediction = data[2]+"";
+                this.actualizarImagen();
+                this.changeSignal(data[0] + "");
+                this.streetA.prediction = data[1] + "";
+                this.streetB.prediction = data[2] + "";
                 this.streetA.vehicleCount = data[3];
                 this.streetB.vehicleCount = data[4];
 
-
-                this.gem.generarContenido( 'Genera un texto corto muy consiso hazlo sin dudas o preguntas en donde expliques, cual es la calle que debe tener preferencia y el tiempo aproximado que debería estar activa esa preferencia si, estamos en una intersección con semaforo, la primera calle tiene '+this.streetA.vehicleCount +" vehiculos, y la segunda calle tiene "+this.streetB.vehicleCount+" vehiculos").subscribe({
-                  next: (response:any) => {
+                this.gem.generarContenido('Genera un texto corto muy consiso hazlo sin dudas o preguntas en donde expliques, cual es la calle que debe tener preferencia y el tiempo aproximado que debería estar activa esa preferencia si, estamos en una intersección con semaforo, la primera calle tiene ' + this.streetA.vehicleCount + " vehiculos, y la segunda calle tiene " + this.streetB.vehicleCount + " vehiculos").subscribe({
+                  next: (response: any) => {
                     this.mensajeTexto = response.candidates[0]?.content?.parts[0]?.text || 'No se pudo generar texto';
-
+                    this.historyService.addAnalysis({
+                      imageUrl1: originalImageUrl1,
+                      imageUrl2: originalImageUrl2,
+                      predictionA: this.streetA.prediction,
+                      predictionB: this.streetB.prediction,
+                      vehicleCountA: this.streetA.vehicleCount,
+                      vehicleCountB: this.streetB.vehicleCount,
+                      recommendation: this.mensajeTexto
+                    });
                   },
                   error: (err) => console.error('Error al generar contenido:', err)
                 });
               })
-                    },
-                error: (err) => console.error('Error al analizar imagen B:', err)
-              });
-            }
+            },
+            error: (err) => console.error('Error al analizar imagen B:', err)
+          });
+        }
       },
       error: (err) => console.error('Error al analizar imagen A:', err)
     });
   }
-
-  
 
   this.showPredictionModal = true;
 }
@@ -139,7 +144,7 @@ AnalizarImagenes() {
 
     this.mostrarMensajeInicial();
   }
-  constructor(private sol:Requests ,private gem:GeminiAPI) {}
+  constructor(private sol:Requests ,private gem:GeminiAPI, private historyService: HistoryService) {}
   actualizarImagen(): void {
     const timestamp = new Date().getTime();
     this.imagenUrl1 = `${this.imagenBaseUrl1}?t=${timestamp}`;

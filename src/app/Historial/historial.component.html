@@ -1,0 +1,26 @@
+<div class="container">
+  <h1>Historial de Análisis</h1>
+  <div *ngIf="history.length === 0" class="empty-history">
+    <p>No hay análisis guardados.</p>
+  </div>
+  <div *ngFor="let record of history" class="record">
+    <div class="record-header">
+      <span>{{ record.date | date:'short' }}</span>
+    </div>
+    <div class="record-body">
+      <div class="image-container">
+        <img [src]="record.imageUrl1" alt="Imagen Calle A">
+        <p>Calle A: {{ record.vehicleCountA }} vehículos</p>
+        <p>Predicción: {{ record.predictionA }}</p>
+      </div>
+      <div class="image-container">
+        <img [src]="record.imageUrl2" alt="Imagen Calle B">
+        <p>Calle B: {{ record.vehicleCountB }} vehículos</p>
+        <p>Predicción: {{ record.predictionB }}</p>
+      </div>
+    </div>
+    <div class="record-footer">
+      <p><strong>Recomendación:</strong> {{ record.recommendation }}</p>
+    </div>
+  </div>
+</div>

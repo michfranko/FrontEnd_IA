@@ -35,18 +35,53 @@
 .icon {
   font-size: 1.2rem; /* Más pequeño */
 }
-.modal{
+
+@media (max-width: 768px) {
+  .footer-menu {
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .footer-menu button {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+  .icon {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  .button-text {
+    display: none;
+  }
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.modal {
   background-color: white;
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  padding: 50px;
-  top: -600%;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: fixed;
+  width: 90%;
+  max-width: 800px; /* Aumentado para más espacio */
+  padding: 2rem;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content {
+  max-height: 70vh; /* Altura máxima antes de scrollear */
+  overflow-y: auto; /* Scrollear verticalmente si es necesario */
+  padding-right: 15px; /* Espacio para la barra de scroll */
 }

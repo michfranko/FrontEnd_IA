@@ -16,7 +16,7 @@ import tempfile
 model = YOLO('best.pt')
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 filename1 = "output1.png"
 
@@ -320,4 +320,4 @@ def get_history():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)

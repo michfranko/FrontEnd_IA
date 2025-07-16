@@ -1,16 +1,58 @@
 from flask import Flask, jsonify, send_file, request
 from flask_cors import CORS
+from datetime import datetime
 import os
 import cv2
 import numpy as np
 from PIL import Image
 from ultralytics import YOLO
+import psycopg2
 import tempfile
+
+
+
+
 
 model = YOLO('best.pt')
 
 app = Flask(__name__)
 CORS(app)
+
+filename1 = "output1.png"
+
+
+def generate_filename(prefix="image"):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    return f"{prefix}_{timestamp}.png"
+
+
+# Configura tu conexión a PostgreSQL
+def get_db_connection():
+    return psycopg2.connect(
+        dbname="midb",
+        user="usuario",
+        password="123",
+        host="localhost",
+        port="5432"
+    )
+
+def save_analysis(image1, image2, count_a, count_b, traffic_signal):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO analysis_history (image_url_1, image_url_2, vehicle_count_a, vehicle_count_b, traffic_signal)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (image1, image2, count_a, count_b, traffic_signal))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error saving analysis to DB: {e}")
+
+
+
+
 
 @app.route("/api/")
 def hello_world():
@@ -41,6 +83,15 @@ def get_image1():
         return send_file(img_path, mimetype='image/png')
     except FileNotFoundError:
         return jsonify({"error": "Image not found"}), 404
+
+#Dinamico a las imagenes para el historial
+@app.route('/api/image/<filename>')
+def get_image(filename):
+    img_path = os.path.join("static", filename)
+    try:
+        return send_file(img_path, mimetype='image/png')
+    except FileNotFoundError:
+        return jsonify({"error": f"Image '{filename}' not found"}), 404
 
 
 @app.route("/api/send", methods=['POST'])
@@ -116,7 +167,9 @@ def process_img1():
         if isinstance(img_with_boxes, Image.Image):
             img_with_boxes = np.array(img_with_boxes)
 
-        output_path = os.path.join("static", "output1.png")
+        filename1 = generate_filename("output1")
+        output_path = os.path.join("static", filename1)
+
         cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
 
         # Leer archivo existente
@@ -191,7 +244,9 @@ def process_img2():
         print(results)
         
         # Guardar la imagen procesada en static
-        output_path = os.path.join("static", "output2.png")
+        filename2 = generate_filename("output2")
+        output_path = os.path.join("static", filename2)
+
         cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
 
         # Limpiar archivo temporal
@@ -213,6 +268,14 @@ def process_img2():
         with open(traffic_file, "w", encoding="utf-8") as f:
             f.writelines(lineas)
 
+        save_analysis(
+            image1=filename1,
+            image2=filename2,
+            count_a=countA,
+            count_b=countB,
+            traffic_signal=lineas[0].strip()
+        )
+
         return jsonify({'results': detections})
 
     except Exception as e:
@@ -226,6 +289,34 @@ def get_processed_image():
         return send_file(img_path, mimetype='image/png')
     except FileNotFoundError:
         return jsonify({"error": "Image not found"}), 404
+
+@app.route("/api/history", methods=["GET"])
+def get_history():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, analysis_date, image_url_1, image_url_2, vehicle_count_a, vehicle_count_b, traffic_signal
+            FROM analysis_history ORDER BY analysis_date DESC
+        """)
+        rows = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        result = [dict(zip(columns, row)) for row in rows]
+
+        # Añade la URL completa para cada imagen
+        for r in result:
+            r["image_url_1"] = f"/api/image/{r['image_url_1']}"
+            r["image_url_2"] = f"/api/image/{r['image_url_2']}"
+
+
+        cur.close()
+        conn.close()
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == "__main__":

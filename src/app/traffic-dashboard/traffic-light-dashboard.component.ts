@@ -66,11 +66,10 @@ AnalizarImagenes() {
                     this.historyService.addAnalysis({
                       imageUrl1: originalImageUrl1,
                       imageUrl2: originalImageUrl2,
-                      predictionA: this.streetA.prediction,
-                      predictionB: this.streetB.prediction,
                       vehicleCountA: this.streetA.vehicleCount,
                       vehicleCountB: this.streetB.vehicleCount,
-                      recommendation: this.mensajeTexto
+                      lightA: this.streetA.light,
+                      lightB: this.streetB.light
                     });
                   },
                   error: (err) => console.error('Error al generar contenido:', err)

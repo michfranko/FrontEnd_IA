@@ -10,17 +10,26 @@
     <div class="record-body">
       <div class="image-container">
         <img [src]="record.imageUrl1" alt="Imagen Calle A">
-        <p>Calle A: {{ record.vehicleCountA }} vehículos</p>
-        <p>Predicción: {{ record.predictionA }}</p>
+        <div>
+          <p>Calle A: {{ record.vehicleCountA }} vehículos</p>
+          <div class="side-traffic-light">
+            <div class="light red" [ngClass]="{ 'on': record.lightA === 'red' }"></div>
+            <div class="light yellow" [ngClass]="{ 'on': record.lightA === 'yellow' }"></div>
+            <div class="light green" [ngClass]="{ 'on': record.lightA === 'green' }"></div>
+          </div>
+        </div>
       </div>
       <div class="image-container">
         <img [src]="record.imageUrl2" alt="Imagen Calle B">
-        <p>Calle B: {{ record.vehicleCountB }} vehículos</p>
-        <p>Predicción: {{ record.predictionB }}</p>
+        <div>
+          <p>Calle B: {{ record.vehicleCountB }} vehículos</p>
+          <div class="side-traffic-light">
+            <div class="light red" [ngClass]="{ 'on': record.lightB === 'red' }"></div>
+            <div class="light yellow" [ngClass]="{ 'on': record.lightB === 'yellow' }"></div>
+            <div class="light green" [ngClass]="{ 'on': record.lightB === 'green' }"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="record-footer">
-      <p><strong>Recomendación:</strong> {{ record.recommendation }}</p>
     </div>
   </div>
 </div>

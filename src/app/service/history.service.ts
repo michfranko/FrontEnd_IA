@@ -5,11 +5,10 @@ export interface AnalysisRecord {
   date: string;
   imageUrl1: string;
   imageUrl2: string;
-  predictionA: string;
-  predictionB: string;
   vehicleCountA: number;
   vehicleCountB: number;
-  recommendation: string;
+  lightA: string;
+  lightB: string;
 }
 
 @Injectable({

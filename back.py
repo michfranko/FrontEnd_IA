@@ -166,7 +166,8 @@ def process_img1():
         img_with_boxes = results[0].plot()
         if isinstance(img_with_boxes, Image.Image):
             img_with_boxes = np.array(img_with_boxes)
-
+        
+        global filename1
         filename1 = generate_filename("output1")
         output_path = os.path.join("static", filename1)
 

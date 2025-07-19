@@ -19,8 +19,11 @@ export class FooterMenuComponent implements OnInit {
   constructor(private historyService: HistoryService) {}
 
   ngOnInit(): void {
-    this.history = this.historyService.getHistory();
-  }
+  this.historyService.getHistory().subscribe(
+    data => this.history = data,
+    error => console.error('Error al cargar el historial', error)
+  );
+}
 
   openGithub() {
     window.open('https://github.com/SirYorch/Smart-Traffic-Light', '_blank');
@@ -39,11 +42,16 @@ export class FooterMenuComponent implements OnInit {
   }
 
   toggleHistory() {
-    this.showHistory = !this.showHistory;
-    if (this.showHistory) {
-      this.history = this.historyService.getHistory();
-    }
-    this.showIntegrantes = false;
-    this.showAbout = false;
+  this.showHistory = !this.showHistory;
+  if (this.showHistory) {
+    this.historyService.getHistory().subscribe(
+      data => {this.history = data
+        console.log(data);
+      },
+      error => console.error('Error al cargar el historial', error)
+    );
   }
+  this.showIntegrantes = false;
+  this.showAbout = false;
+}
 }

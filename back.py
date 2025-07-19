@@ -193,7 +193,7 @@ def process_img1():
 
         os.remove(image_path)
 
-        return jsonify({'results': detections})
+        return jsonify({'results': detections,'url':f"/api/image/{filename1}"})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -277,7 +277,7 @@ def process_img2():
             traffic_signal=lineas[0].strip()
         )
 
-        return jsonify({'results': detections})
+        return jsonify({'results': detections,'url':f"/api/image/{filename2}"})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

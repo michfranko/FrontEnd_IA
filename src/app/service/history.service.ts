@@ -30,12 +30,27 @@ export class HistoryService {
         imageUrl2: r.image_url_2,
         vehicleCountA: r.vehicle_count_a,
         vehicleCountB: r.vehicle_count_b,
-        lightA: r.traffic_signal,
-        lightB: r.traffic_signal
+        lightA: this.changeSignal(r.traffic_signal, 1),
+        lightB: this.changeSignal(r.traffic_signal, 2)
       })))
     );
   }
   addAnalysis(record: Omit<AnalysisRecord, 'id' | 'date'>): Observable<any> {
     return this.http.post(this.API_URL, record);
   }
+
+ changeSignal(signal:string,street:number): string {
+    if(signal[0]=="1" && street ==2){
+      return 'red';
+    } else if(signal[0]=="2" && street ==1){
+      return 'red'
+    }
+    if(signal[1]=="1"){
+      return 'red';
+    } else if(signal[1]=="2"){
+      return 'yellow';
+    } else if(signal[1]=="3"){
+      return 'green';
+  }return"";
+ }
 }

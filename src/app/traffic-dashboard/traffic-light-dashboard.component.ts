@@ -49,9 +49,11 @@ AnalizarImagenes() {
   if (this.imagen1) {
     this.sol.sendImg1(this.imagen1).subscribe({
       next: (response) => {
+        this.imagenBaseUrl1 = response.url;
         if (this.imagen2) {
           this.sol.sendImg2(this.imagen2).subscribe({
             next: (response) => {
+              this.imagenBaseUrl2 = response.url;
               this.datos = this.sol.solicitarDatos().subscribe((data) => {
                 this.actualizarImagen();
                 this.changeSignal(data[0] + "");

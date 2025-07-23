@@ -132,16 +132,16 @@ AnalizarImagenes() {
       this.imagen2 = new File([blob], 'foto2.jpg', { type: blob.type });
       this.imagenUrl2 = 'foto2.jpg';
       });
-    // setInterval(() => {
-    //   this.datos = this.sol.solicitarDatos().subscribe((data) => {
-    //     this.actualizarImagen();1
-    //     this.changeSignal(data[0]+"");
-    //     this.streetA.prediction = data[1]+"";
-    //     this.streetB.prediction = data[2]+"";
-    //     this.streetA.vehicleCount = data[3];
-    //     this.streetB.vehicleCount = data[4];
-    //   })
-    // }, 6000);
+    setInterval(() => {
+      this.datos = this.sol.solicitarDatos().subscribe((data) => {
+        this.actualizarImagen();
+        this.changeSignal(data[0]+"");
+        this.streetA.prediction = data[1]+"";
+        this.streetB.prediction = data[2]+"";
+        this.streetA.vehicleCount = data[3];
+        this.streetB.vehicleCount = data[4];
+      })
+    }, 1500);
 
     this.mostrarMensajeInicial();
   }

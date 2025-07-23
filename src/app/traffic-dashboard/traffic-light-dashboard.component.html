@@ -31,6 +31,7 @@
         <div class="info">
           <div>Predicción: {{streetA.prediction}}</div>
           <div>Cantidad Vehículos: {{streetA.vehicleCount}}</div>
+          <div>Estado: <span [ngClass]="streetA.light">{{streetA.light}}</span></div>
         </div>
       </div>
     </div>
@@ -45,6 +46,7 @@
         <div class="info">
           <div>Predicción: {{streetB.prediction}}</div>
           <div>Cantidad Vehículos: {{streetB.vehicleCount}}</div>
+          <div>Estado: <span [ngClass]="streetB.light">{{streetB.light}}</span></div>
         </div>
       </div>
       <div class="side-traffic-light right">

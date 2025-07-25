@@ -170,9 +170,9 @@ def process_img1():
         global filename1
         filename1 = generate_filename("output1")
         output_path = os.path.join("static", filename1)
-
+        
         cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
-
+        cv2.imwrite(os.path.join("static", "output1.png"), cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
         # Leer archivo existente
         traffic_file = "traffic.txt"
         with open(traffic_file, "r", encoding="utf-8") as f:
@@ -249,6 +249,7 @@ def process_img2():
         output_path = os.path.join("static", filename2)
 
         cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(os.path.join("static", "output2.png"), cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
 
         # Limpiar archivo temporal
         os.remove(image_path)

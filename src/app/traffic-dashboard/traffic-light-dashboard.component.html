@@ -1,11 +1,7 @@
 <div class="header">
-  <div class="left-action">
-      <button class="analysis-btn" (click)="AnalizarImagenes()">Análisis de Imágenes</button>
-  </div>
-
   Traffic Light Viewer
 
-  <div class="upload-btn" style="display: none;">
+  <div class="upload-btn" style="display: block;">
     <label>
       <input type="file" (change)="onImageUpload($event)" hidden />
       <span>Prueba nuestro modelo</span>
@@ -24,10 +20,6 @@
       </div>
       <div class="card-content">
         <img [src]="imagenUrl1" alt="Calle A" class="street-image" />
-        <label class="image-action-btn">
-          <input type="file" hidden (change)="CargarImagen($event, 'A')" />
-          Seleccionar imagen primera calle
-        </label>
         <div class="info">
           <div>Predicción: {{streetA.prediction}}</div>
           <div>Cantidad Vehículos: {{streetA.vehicleCount}}</div>
@@ -38,10 +30,6 @@
     <div class="street-card">
       <div class="card-content">
         <img [src]="imagenUrl2" alt="Calle B" class="street-image" />
-        <label class="image-action-btn">
-          <input type="file" hidden (change)="CargarImagen($event, 'B')" />
-          Seleccionar imagen primera calle
-        </label>
         <div class="info">
           <div>Predicción: {{streetB.prediction}}</div>
           <div>Cantidad Vehículos: {{streetB.vehicleCount}}</div>

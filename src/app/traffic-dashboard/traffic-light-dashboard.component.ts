@@ -36,58 +36,6 @@ CargarImagen(event: Event, street: 'A' | 'B') {
   };
   reader.readAsDataURL(file);
 }
-AnalizarImagenes() {
-  if (!this.imagen1 || !this.imagen2) {
-    this.mensajeTexto = "Debe subir las dos imagenes para realizar la comparacion.";
-    this.mensajeVisible = true;
-    return;
-  }
-
-  const originalImageUrl1 = this.imagenUrl1;
-  const originalImageUrl2 = this.imagenUrl2;
-
-  if (this.imagen1) {
-    this.sol.sendImg1(this.imagen1).subscribe({
-      next: (response) => {
-        this.imagenBaseUrl1 = response.url;
-        if (this.imagen2) {
-          this.sol.sendImg2(this.imagen2).subscribe({
-            next: (response) => {
-              this.imagenBaseUrl2 = response.url;
-              this.datos = this.sol.solicitarDatos().subscribe((data) => {
-                this.actualizarImagen();
-                this.changeSignal(data[0] + "");
-                this.streetA.prediction = data[1] + "";
-                this.streetB.prediction = data[2] + "";
-                this.streetA.vehicleCount = data[3];
-                this.streetB.vehicleCount = data[4];
-
-                this.gem.generarContenido('Genera un texto corto muy consiso hazlo sin dudas o preguntas en donde expliques, cual es la calle que debe tener preferencia y el tiempo aproximado que debería estar activa esa preferencia si, estamos en una intersección con semaforo, la primera calle tiene ' + this.streetA.vehicleCount + " vehiculos, y la segunda calle tiene " + this.streetB.vehicleCount + " vehiculos").subscribe({
-                  next: (response: any) => {
-                    this.mensajeTexto = response.candidates[0]?.content?.parts[0]?.text || 'No se pudo generar texto';
-                    this.historyService.addAnalysis({
-                      imageUrl1: originalImageUrl1,
-                      imageUrl2: originalImageUrl2,
-                      vehicleCountA: this.streetA.vehicleCount,
-                      vehicleCountB: this.streetB.vehicleCount,
-                      lightA: this.streetA.light,
-                      lightB: this.streetB.light
-                    });
-                  },
-                  error: (err) => console.error('Error al generar contenido:', err)
-                });
-              })
-            },
-            error: (err) => console.error('Error al analizar imagen B:', err)
-          });
-        }
-      },
-      error: (err) => console.error('Error al analizar imagen A:', err)
-    });
-  }
-
-  this.showPredictionModal = true;
-}
 
 
 
@@ -112,14 +60,15 @@ AnalizarImagenes() {
   ngOnInit(): void {
     this.imagen1 = null;
     this.imagen2 = null;
-    // this.datos = this.sol.solicitarDatos().subscribe((data) => {
-    //     this.changeSignal(data[0]+"");
-    //     this.streetA.prediction = data[1]+"";
-    //     this.streetB.prediction = data[2]+"";
-    //     this.streetA.vehicleCount = data[3];
-    //     this.streetB.vehicleCount = data[4];
-    //   })
-    // Cargar imágenes por defecto desde la carpeta public como File
+    
+    this.datos = this.sol.solicitarDatos().subscribe((data) => {
+        this.changeSignal(data[0]+"");
+        this.streetA.prediction = data[1]+"";
+        this.streetB.prediction = data[2]+"";
+        this.streetA.vehicleCount = data[3];
+        this.streetB.vehicleCount = data[4];
+      })
+    
     fetch('foto1.jpg')
       .then(res => res.blob())
       .then(blob => {
@@ -132,16 +81,16 @@ AnalizarImagenes() {
       this.imagen2 = new File([blob], 'foto2.jpg', { type: blob.type });
       this.imagenUrl2 = 'foto2.jpg';
       });
-    // setInterval(() => {
-    //   this.datos = this.sol.solicitarDatos().subscribe((data) => {
-    //     this.actualizarImagen();1
-    //     this.changeSignal(data[0]+"");
-    //     this.streetA.prediction = data[1]+"";
-    //     this.streetB.prediction = data[2]+"";
-    //     this.streetA.vehicleCount = data[3];
-    //     this.streetB.vehicleCount = data[4];
-    //   })
-    // }, 6000);
+    setInterval(() => {
+      this.datos = this.sol.solicitarDatos().subscribe((data) => {
+        this.actualizarImagen();
+        this.changeSignal(data[0]+"");
+        this.streetA.prediction = data[1]+"";
+        this.streetB.prediction = data[2]+"";
+        this.streetA.vehicleCount = data[3];
+        this.streetB.vehicleCount = data[4];
+      })
+    }, 3000);
 
     this.mostrarMensajeInicial();
   }

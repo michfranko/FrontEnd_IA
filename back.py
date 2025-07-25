@@ -9,12 +9,24 @@ from ultralytics import YOLO
 import psycopg2
 import tempfile
 
-# --- Model and App Initialization ---
+
+
+
+
 model = YOLO('best.pt')
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# --- Database Connection ---
+filename1 = "output1.png"
+
+
+def generate_filename(prefix="image"):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    return f"{prefix}_{timestamp}.png"
+
+
+# Configura tu conexión a PostgreSQL
 def get_db_connection():
     return psycopg2.connect(
         dbname="midb",
@@ -38,30 +50,122 @@ def save_analysis(image1, image2, count_a, count_b, traffic_signal):
     except Exception as e:
         print(f"Error saving analysis to DB: {e}")
 
-# --- Image Processing Helper ---
-def process_image_in_memory(image_file):
-    """Reads an image file from the request, decodes it, and runs prediction."""
-    image_data = image_file.read()
-    nparr = np.frombuffer(image_data, np.uint8)
-    img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+
+
+
+@app.route("/api/")
+def hello_world():
+    try:
+        with open("traffic.txt", "r") as file:
+            data = file.read().splitlines()
+        filtered_data = [line for line in data if line.strip()]
+        return jsonify(filtered_data)
+    except FileNotFoundError:
+        return jsonify({"error": "File traffic.txt not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/im2')
+def get_image2():
+    img_path = os.path.join("static", "output2.png")
+    try:
+        return send_file(img_path, mimetype='image/png')
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
+
+
+@app.route('/api/im1')
+def get_image1():
+    img_path = os.path.join("static", "output1.png")
+    try:
+        return send_file(img_path, mimetype='image/png')
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
+
+#Dinamico a las imagenes para el historial
+@app.route('/api/image/<filename>')
+def get_image(filename):
+    img_path = os.path.join("static", filename)
+    try:
+        return send_file(img_path, mimetype='image/png')
+    except FileNotFoundError:
+        return jsonify({"error": f"Image '{filename}' not found"}), 404
+
+
+@app.route("/api/send", methods=['POST'])
+def process_img():
+    try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image file provided'}), 400
+
+        # Guardar temporalmente la imagen recibida
+        image_file = request.files['image']
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp:
+            image_path = tmp.name
+            image_file.save(image_path)
+
+        # Realizar la predicción
+        results = model.predict(image_path, save=False)
+        detections = []
+        for box in results[0].boxes:
+            detection = {
+                'class': int(box.cls[0]),
+                'confidence': float(box.conf[0]),
+                'bbox': [float(coord) for coord in box.xyxy[0]]
+            }
+            detections.append(detection)
+
+        # Dibujar los resultados en la imagen
+        img_with_boxes = results[0].plot()
+
+        # Convertir a formato OpenCV
+        if isinstance(img_with_boxes, Image.Image):
+            img_with_boxes = np.array(img_with_boxes)
+
+        # Guardar la imagen procesada en static
+        output_path = os.path.join("static", "output.png")
+        cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
+
+        # Limpiar archivo temporal
+        os.remove(image_path)
+
+        return jsonify({'results': detections})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
-    if img_np is None:
-        return None, None
-        
-    results = model.predict(img_np, save=False, verbose=False)
-    
-    detections = []
-    for box in results[0].boxes:
-        detection = {
-            'class': int(box.cls[0]),
-            'confidence': float(box.conf[0]),
-            'bbox': [float(coord) for coord in box.xyxy[0]]
-        }
-        detections.append(detection)
-        
-    img_with_boxes = results[0].plot()
-    if isinstance(img_with_boxes, Image.Image):
-        img_with_boxes = np.array(img_with_boxes)
+
+
+
+import json  # para convertir objetos a texto plano
+
+@app.route("/api/send1", methods=['POST'])
+def process_img1():
+    try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image file provided'}), 400
+
+        image_file = request.files['image']
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp:
+            image_path = tmp.name
+            image_file.save(image_path)
+
+        results = model.predict(image_path, save=False)
+
+        detections = []
+        for box in results[0].boxes:
+            detection = {
+                'class': int(box.cls[0]),
+                'confidence': float(box.conf[0]),
+                'bbox': [float(coord) for coord in box.xyxy[0]]
+            }
+            detections.append(detection)
+
+        img_with_boxes = results[0].plot()
+        if isinstance(img_with_boxes, Image.Image):
+            img_with_boxes = np.array(img_with_boxes)
         
         global filename1
         filename1 = generate_filename("output1")
@@ -92,47 +196,15 @@ def process_image_in_memory(image_file):
         return jsonify({'results': detections,'url':f"/api/image/{filename1}"})
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/api/send1", methods=['POST'])
-def process_img1():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image file provided'}), 400
-
-    detections, img_with_boxes = process_image_in_memory(request.files['image'])
-    if detections is None:
-        return jsonify({'error': 'Could not decode image'}), 400
-
-    output_path = os.path.join("static", "output1.png")
-    cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
-    
-    try:
-        with open("traffic.txt", "r+") as f:
-            lines = f.readlines()
-            while len(lines) < 5:
-                lines.append("\n")
-            lines[1] = str(model.names) + "\n"
-            lines[3] = str(len(detections)) + "\n"
-            f.seek(0)
-            f.writelines(lines)
-            f.truncate()
-    except FileNotFoundError:
-        # Create the file if it doesn't exist
-        with open("traffic.txt", "w") as f:
-            f.write("\n" * 5) # Create 5 empty lines
-            f.seek(0)
-            lines = ["\n"]*5
-            lines[1] = str(model.names) + "\n"
-            lines[3] = str(len(detections)) + "\n"
-            f.writelines(lines)
+        return jsonify({'error': str(e)}), 500
 
 
-    return jsonify({'results': detections, 'url': '/api/image/output1.png'})
 
 @app.route("/api/send2", methods=['POST'])
 def process_img2():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image file provided'}), 400
+    try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image file provided'}), 400
 
         # Guardar temporalmente la imagen recibida
         image_file = request.files['image']
@@ -179,53 +251,46 @@ def process_img2():
         cv2.imwrite(output_path, cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
         cv2.imwrite(os.path.join("static", "output2.png"), cv2.cvtColor(img_with_boxes, cv2.COLOR_RGB2BGR))
 
+        # Limpiar archivo temporal
+        os.remove(image_path)
+
+        # Asegúrate de convertir a enteros para comparar correctamente
+        countA = int(lineas[3].strip())
+        countB = int(lineas[4].strip())
+
+        if countA > countB:
+            lineas[0] = "13\n"  # Encender verde calle A
+        elif countA < countB:
+            lineas[0] = "23\n"  # Encender verde calle B
+        else:
+            lineas[0] = "12\n"  # Ambos en amarillo o modo espera
+
+
+        # Escribir de vuelta
+        with open(traffic_file, "w", encoding="utf-8") as f:
+            f.writelines(lineas)
+
+        save_analysis(
+            image1=filename1,
+            image2=filename2,
+            count_a=countA,
+            count_b=countB,
+            traffic_signal=lineas[0].strip()
+        )
+
+        return jsonify({'results': detections,'url':f"/api/image/{filename2}"})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/imTest')
+def get_processed_image():
+    img_path = os.path.join("static", "output.png")
     try:
-        with open("traffic.txt", "r+") as f:
-            lines = f.readlines()
-            while len(lines) < 5:
-                lines.append("\n")
-            
-            lines[2] = str(model.names) + "\n"
-            lines[4] = str(len(detections)) + "\n"
-
-            countA = int(lines[3].strip() or 0)
-            countB = int(lines[4].strip() or 0)
-
-            if countA > countB:
-                lines[0] = "13\n"
-            elif countA < countB:
-                lines[0] = "23\n"
-            else:
-                lines[0] = "12\n"
-            
-            f.seek(0)
-            f.writelines(lines)
-            f.truncate()
-            
-            save_analysis(
-                image1="output1.png",
-                image2="output2.png",
-                count_a=countA,
-                count_b=countB,
-                traffic_signal=lines[0].strip()
-            )
-    except (FileNotFoundError, IndexError, ValueError) as e:
-        return jsonify({'error': f'Error processing traffic.txt: {e}'}), 500
-
-    return jsonify({'results': detections, 'url': '/api/im2'})
-
-# --- Static File Endpoints ---
-@app.route('/api/im1')
-def get_image1():
-    return send_file(os.path.join("static", "output1.png"), mimetype='image/png')
-
-@app.route('/api/im2')
-def get_image2():
-    return send_file(os.path.join("static", "output2.png"), mimetype='image/png')
-
-@app.route('/api/image/<filename>')
-def get_image(filename):
-    return send_file(os.path.join("static", filename), mimetype='image/png')
+        return send_file(img_path, mimetype='image/png')
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
 
 @app.route("/api/history", methods=["GET"])
 def get_history():
@@ -240,15 +305,21 @@ def get_history():
         columns = [desc[0] for desc in cur.description]
         result = [dict(zip(columns, row)) for row in rows]
 
+        # Añade la URL completa para cada imagen
         for r in result:
             r["image_url_1"] = f"/api/image/{r['image_url_1']}"
             r["image_url_2"] = f"/api/image/{r['image_url_2']}"
 
+
         cur.close()
         conn.close()
+
         return jsonify(result)
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
